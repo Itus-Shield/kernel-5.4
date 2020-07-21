@@ -10,6 +10,22 @@ move_config() {
 			[ -f "/mnt/$BACKUP_FILE" ] && mv -f "/mnt/$BACKUP_FILE" /
 			umount /mnt
 			;;
+		itusrouter)
+			mount -t vfat /dev/mmcblk1p1 /mnt
+			[ -f "/mnt/$BACKUP_FILE" ] && cp -f "/mnt/$BACKUP_FILE" /
+			umount /mnt
+			;;
+		itusbridge)
+			mount -t vfat /dev/mmcblk1p1 /mnt
+			[ -f "/mnt/$BACKUP_FILE" ] && mv -f "/mnt/$BACKUP_FILE" /
+			umount /mnt
+			;;
+		itusgateway)
+			mount -t vfat /dev/mmcblk1p1 /mnt
+			[ -f "/mnt/$BACKUP_FILE" ] && mv -f "/mnt/$BACKUP_FILE" /
+			umount /mnt
+			;;
+
 	esac
 }
 
