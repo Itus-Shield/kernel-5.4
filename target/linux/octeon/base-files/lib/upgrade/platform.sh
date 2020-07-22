@@ -1,7 +1,6 @@
 #
 # Copyright (C) 2014 OpenWrt.org
 #
-
 platform_get_rootfs() {
 	local rootfsdev
 
@@ -28,6 +27,11 @@ platform_copy_config() {
 		cp -af "$UPGRADE_BACKUP" "/mnt/$BACKUP_FILE"
 		umount /mnt
 		;;
+	itus,shield-router)
+		mount -t vfat /dev/mmcblk1p1 /mnt
+		cp -af "$UPGRADE_BACKUP" "/mnt/$BACKUP_FILE"
+		umount /mnt
+		;;
 	esac
 }
 
@@ -37,21 +41,39 @@ platform_do_flash() {
 	local kernel=$3
 	local rootfs=$4
 
+	local board_dir=$(tar tf "$1" | grep -m 1 '^sysupgrade-.*/$')
+		board_dir=${board_dir%/}
+	[ -n "$board_dir" ] || return
+
 	mkdir -p /boot
-	mount -t vfat /dev/$kernel /boot
 
-	[ -f /boot/vmlinux.64 -a ! -L /boot/vmlinux.64 ] && {
-		mv /boot/vmlinux.64 /boot/vmlinux.64.previous
-		mv /boot/vmlinux.64.md5 /boot/vmlinux.64.md5.previous
-	}
+	if [ $board = "itus,shield-router" ]; then
+		# mmcblk1p1 (fat) contains all ELF-bin images for the Shield
+		mount /dev/mmcblk1p1 /boot
+		echo "flashing Itus Kernel to /boot/$kernel (/dev/mmblk1p1)"
+		tar -C /tmp -xvf $tar_file
+		cp "/tmp/$board_dir/kernel" /boot/$kernel
+		umount /boot
+		echo "flashing rootfs to ${rootfs}"
+		dd if="/tmp/$board_dir/root" of="${rootfs}"
+	else
+		echo "flashing kernel to /dev/$kernel"
+		mount -t vfat /dev/$kernel /boot
 
-	echo "flashing kernel to /dev/$kernel"
-	tar xf $tar_file sysupgrade-$board/kernel -O > /boot/vmlinux.64
-	md5sum /boot/vmlinux.64 | cut -f1 -d " " > /boot/vmlinux.64.md5
-	echo "flashing rootfs to ${rootfs}"
-	tar xf $tar_file sysupgrade-$board/root -O | dd of="${rootfs}" bs=4096
+		[ -f /boot/vmlinux.64 -a ! -L /boot/vmlinux.64 ] && {
+			mv /boot/vmlinux.64 /boot/vmlinux.64.previous
+			mv /boot/vmlinux.64.md5 /boot/vmlinux.64.md5.previous
+		}
+
+		echo "flashing kernel to /dev/$kernel"
+		tar xf $tar_file $board_dir/kernel -O > /boot/vmlinux.64
+		md5sum /boot/vmlinux.64 | cut -f1 -d " " > /boot/vmlinux.64.md5
+		umount /boot
+
+		echo "flashing rootfs to ${rootfs}"
+		tar xvf $tar_file $board_dir/root -O | dd of="${rootfs}" bs=4096
+	fi
 	sync
-	umount /boot
 }
 
 platform_do_upgrade() {
@@ -68,6 +90,9 @@ platform_do_upgrade() {
 	erlite)
 		kernel=sda1
 		;;
+	itus,shield-router)
+		kernel=ItusrouterImage
+		;;
 	*)
 		return 1
 	esac
@@ -75,18 +100,22 @@ platform_do_upgrade() {
 	platform_do_flash $tar_file $board $kernel $rootfs
 
 	return 0
-	
 }
 
 platform_check_image() {
 	local board=$(board_name)
 
+	local board_dir=$(tar tf "$1" | grep -m 1 '^sysupgrade-.*/$')
+		board_dir=${board_dir%/}
+	[ -n "$board_dir" ] || return
+
 	case "$board" in
 	er | \
-	erlite)
+	erlite | \
+	itus,shield-router)
 		local tar_file="$1"
-		local kernel_length=$(tar xf $tar_file sysupgrade-$board/kernel -O | wc -c 2> /dev/null)
-		local rootfs_length=$(tar xf $tar_file sysupgrade-$board/root -O | wc -c 2> /dev/null)
+		local kernel_length=$(tar xvf $tar_file $board_dir/kernel -O | wc -c 2> /dev/null)
+		local rootfs_length=$(tar xvf $tar_file $board_dir/root -O | wc -c 2> /dev/null)
 		[ "$kernel_length" = 0 -o "$rootfs_length" = 0 ] && {
 			echo "The upgrade image is corrupt."
 			return 1
