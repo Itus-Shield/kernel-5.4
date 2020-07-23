@@ -51,36 +51,36 @@ TARGET_DEVICES += ubnt_edgerouter-lite
 # Itus Network Shield Profiles
 #
 ITUSROUTER_CMDLINE:=console=ttyS0,115200, root=/dev/mmcblk1p2 rootfstype=squashfs,ext4,f2fs rootwait
-define Device/itusrouter
+define Device/itus,shield-router
   DEVICE_VENDOR := Itus Networks
   DEVICE_MODEL := Shield Router
-  BOARD_NAME := itusrouter
+  BOARD_NAME := itus,shield-router
   CMDLINE := $(ITUSROUTER_CMDLINE)
   IMAGE/sysupgrade.tar/squashfs :+ append-metadata | combined-image
   CPU_TYPE := octeon3
 endef
-TARGET_DEVICES += itusrouter
+TARGET_DEVICES += itus,shield-router
 
 ITUSBRIDGE_CMDLINE:=console=ttyS0,115200, root=/dev/mmcblk1p4 rootfstype=squashfs,ext4,f2fs rootwait
-define Device/itusbridge
+define Device/itus,shield-bridge
   DEVICE_VENDOR := Itus Networks
   DEVICE_MODEL := Shield Bridge
-  BOARD_NAME := itusbridge
+  BOARD_NAME := itus,shield-bridge
   CMDLINE := $(ITUSBRIDGE_CMDLINE)
   IMAGE/sysupgrade.tar :+ append-metadata
   CPU_TYPE := octeon3
 endef
-TARGET_DEVICES += itusbridge
+TARGET_DEVICES += itus,shield-bridge
 
 ITUSGATEWAY_CMDLINE:=console=ttyS0,115200, root=/dev/mmcblk1p3 rootfstype=squashfs,ext4,f2fs rootwait
-define Device/itusgateway
+define Device/itus,shield-gateway
   DEVICE_VENDOR := Itus Networks
   DEVICE_MODEL := Shield Recovery
-  BOARD_NAME := itusgateway
+  BOARD_NAME := itus,shield-gateway
   CMDLINE := $(ITUSGATEWAY_CMDLINE)
   IMAGE/sysupgrade.tar :+ append-metadata
   CPU_TYPE := octeon3
 endef
-TARGET_DEVICES += itusgateway
+TARGET_DEVICES += itus,shield-gateway
 
 $(eval $(call BuildImage))

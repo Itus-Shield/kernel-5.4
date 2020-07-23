@@ -29,25 +29,27 @@ platform_copy_config() {
 		cp -af "$UPGRADE_BACKUP" "/mnt/$BACKUP_FILE"
 		umount /mnt
 		;;
-	itusrouter-test)
+	itus,shield-router)
 		mkdir -p /rom
 		mount /dev/mmcblk1p2 /rom
 		PREINIT=1 mount_root
+		mount -t f2fs /dev/loop0 /mnt
 		mount_root done
-		cp -af "$UPGRADE_BACKUP" "/rom/$BACKUP_FILE"
+		echo "loop0"
+		cat /sys/devices/virtual/block/loop0/loop/backing_file
+		cat /sys/devices/virtual/block/loop0/loop/offset
+		echo "loop1"
+		cat /sys/devices/virtual/block/loop1/loop/backing_file
+		cat /sys/devices/virtual/block/loop1/loop/offset		
+		cp -af "$UPGRADE_BACKUP" "/mnt/$BACKUP_FILE"
 		umount /rom
 			;;
-	itusrouter)
-		mount -t vfat /dev/mmcblk1p1 /mnt
-		cp -af "$UPGRADE_BACKUP" "/mnt/$BACKUP_FILE"
-		umount /mnt
-			;;
-	itusbridge)
+	itus,shield-bridge)
 		mount -t vfat /dev/mmcblk1p1 /mnt
 		cp -af "$UPGRADE_BACKUP" "/mnt/$BACKUP_FILE"
 		umount /mnt
 		;;
-	itusgateway)
+	itus,shield-gateway)
 		mount -t vfat /dev/mmcblk1p1 /mnt
 		cp -af "$UPGRADE_BACKUP" "/mnt/$BACKUP_FILE"
 		umount /mnt
@@ -63,7 +65,7 @@ platform_do_flash() {
 
 	mkdir -p /boot
 
-	if [[ $board == "itusrouter" || $board == "itusbridge" || $board == "itusgateway" ]]; then
+	if [[ $board == "itus,shield-router" || $board == "itus,shield-bridge" || $board == "itus,shield-gateway" ]]; then
 	   # mmcblk1p1 (fat) contains all ELF-bin images for the Shield
 	   mount /dev/mmcblk1p1 /boot
 	   echo "flashing Itus Kernel to /boot/$kernel (/dev/mmblk1p1)"
@@ -106,13 +108,13 @@ platform_do_upgrade() {
 	erlite)
 		kernel=sda1
 		;;
-	itusrouter)
+	itus,shield-router)
 		kernel=ItusrouterImage
 		;;
-	itusbridge)
+	itus,shield-bridge)
 		kernel=ItusbridgeImage
 		;;
-	itusgateway)
+	itus,shield-gateway)
 		kernel=ItusgatewayImage
 		;;
 	*)
