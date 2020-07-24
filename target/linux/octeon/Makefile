@@ -10,7 +10,7 @@ ARCH:=mips64
 BOARD:=octeon
 BOARDNAME:=Cavium Networks Octeon
 FEATURES:=squashfs ramdisk pci usb
-CPU_TYPE:=octeonplus
+CPU_TYPE:=octeon3
 
 KERNEL_PATCHVER:=5.4
 KERNEL_TESTING_PATCHVER:=5.4

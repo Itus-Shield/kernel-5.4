@@ -57,7 +57,6 @@ define Device/itus,shield-router
   BOARD_NAME := itus,shield-router
   CMDLINE := $(ITUSROUTER_CMDLINE)
   IMAGE/sysupgrade.tar/squashfs :+ append-metadata | combined-image
-  CPU_TYPE := octeon3
 endef
 TARGET_DEVICES += itus,shield-router
 
@@ -67,19 +66,17 @@ define Device/itus,shield-bridge
   DEVICE_MODEL := Shield Bridge
   BOARD_NAME := itus,shield-bridge
   CMDLINE := $(ITUSBRIDGE_CMDLINE)
-  IMAGE/sysupgrade.tar :+ append-metadata
-  CPU_TYPE := octeon3
+  IMAGE/sysupgrade.tar/squashfs :+ append-metadata | combined-image
 endef
 TARGET_DEVICES += itus,shield-bridge
 
 ITUSGATEWAY_CMDLINE:=console=ttyS0,115200, root=/dev/mmcblk1p3 rootfstype=squashfs,ext4,f2fs rootwait
 define Device/itus,shield-gateway
   DEVICE_VENDOR := Itus Networks
-  DEVICE_MODEL := Shield Recovery
+  DEVICE_MODEL := Shield Gateway
   BOARD_NAME := itus,shield-gateway
   CMDLINE := $(ITUSGATEWAY_CMDLINE)
-  IMAGE/sysupgrade.tar :+ append-metadata
-  CPU_TYPE := octeon3
+  IMAGE/sysupgrade.tar/squashfs :+ append-metadata | combined-image
 endef
 TARGET_DEVICES += itus,shield-gateway
 

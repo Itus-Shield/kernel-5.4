@@ -30,20 +30,10 @@ platform_copy_config() {
 		umount /mnt
 		;;
 	itus,shield-router)
-		mkdir -p /rom
-		mount /dev/mmcblk1p2 /rom
-		PREINIT=1 mount_root
-		mount -t f2fs /dev/loop0 /mnt
-		mount_root done
-		echo "loop0"
-		cat /sys/devices/virtual/block/loop0/loop/backing_file
-		cat /sys/devices/virtual/block/loop0/loop/offset
-		echo "loop1"
-		cat /sys/devices/virtual/block/loop1/loop/backing_file
-		cat /sys/devices/virtual/block/loop1/loop/offset		
+		mount -t vfat /dev/mmcblk1p1 /mnt
 		cp -af "$UPGRADE_BACKUP" "/mnt/$BACKUP_FILE"
-		umount /rom
-			;;
+		umount /mnt
+		;;
 	itus,shield-bridge)
 		mount -t vfat /dev/mmcblk1p1 /mnt
 		cp -af "$UPGRADE_BACKUP" "/mnt/$BACKUP_FILE"
