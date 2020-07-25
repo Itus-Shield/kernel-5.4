@@ -51,33 +51,33 @@ TARGET_DEVICES += ubnt_edgerouter-lite
 # Itus Network Shield Profiles
 #
 ITUSROUTER_CMDLINE:=console=ttyS0,115200, root=/dev/mmcblk1p2 rootfstype=squashfs,ext4,f2fs rootwait
-define Device/itus,shield-router
+define Device/itus_shield-router
   DEVICE_VENDOR := Itus Networks
   DEVICE_MODEL := Shield Router
-  BOARD_NAME := itus,shield-router
+  BOARD_NAME := itus_shield-router
   CMDLINE := $(ITUSROUTER_CMDLINE)
-  IMAGE/sysupgrade.tar/squashfs :+ append-metadata | combined-image
+  IMAGE/sysupgrade.tar/squashfs += | append-metadata
 endef
-TARGET_DEVICES += itus,shield-router
+TARGET_DEVICES += itus_shield-router
 
 ITUSBRIDGE_CMDLINE:=console=ttyS0,115200, root=/dev/mmcblk1p4 rootfstype=squashfs,ext4,f2fs rootwait
-define Device/itus,shield-bridge
+define Device/itus_shield-bridge
   DEVICE_VENDOR := Itus Networks
   DEVICE_MODEL := Shield Bridge
-  BOARD_NAME := itus,shield-bridge
+  BOARD_NAME := itus_shield-bridge
   CMDLINE := $(ITUSBRIDGE_CMDLINE)
-  IMAGE/sysupgrade.tar/squashfs :+ append-metadata | combined-image
+  IMAGE/sysupgrade.tar/squashfs += | append-metadata
 endef
-TARGET_DEVICES += itus,shield-bridge
+TARGET_DEVICES += itus_shield-bridge
 
 ITUSGATEWAY_CMDLINE:=console=ttyS0,115200, root=/dev/mmcblk1p3 rootfstype=squashfs,ext4,f2fs rootwait
-define Device/itus,shield-gateway
+define Device/itus_shield-gateway
   DEVICE_VENDOR := Itus Networks
   DEVICE_MODEL := Shield Gateway
-  BOARD_NAME := itus,shield-gateway
+  BOARD_NAME := itus_shield-gateway
   CMDLINE := $(ITUSGATEWAY_CMDLINE)
-  IMAGE/sysupgrade.tar/squashfs :+ append-metadata | combined-image
+  IMAGE/sysupgrade.tar/squashfs += | append-metadata
 endef
-TARGET_DEVICES += itus,shield-gateway
+TARGET_DEVICES += itus_shield-gateway
 
 $(eval $(call BuildImage))

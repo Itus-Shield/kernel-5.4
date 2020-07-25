@@ -1,8 +1,6 @@
 #
 # Copyright (C) 2014 OpenWrt.org
 #
-RAMFS_COPY_BIN=mkfs.f2fs
-
 platform_get_rootfs() {
 	local rootfsdev
 
@@ -29,17 +27,17 @@ platform_copy_config() {
 		cp -af "$UPGRADE_BACKUP" "/mnt/$BACKUP_FILE"
 		umount /mnt
 		;;
-	itus,shield-router)
+	itus_shield-router)
 		mount -t vfat /dev/mmcblk1p1 /mnt
 		cp -af "$UPGRADE_BACKUP" "/mnt/$BACKUP_FILE"
 		umount /mnt
 		;;
-	itus,shield-bridge)
+	itus_shield-bridge)
 		mount -t vfat /dev/mmcblk1p1 /mnt
 		cp -af "$UPGRADE_BACKUP" "/mnt/$BACKUP_FILE"
 		umount /mnt
 		;;
-	itus,shield-gateway)
+	itus_shield-gateway)
 		mount -t vfat /dev/mmcblk1p1 /mnt
 		cp -af "$UPGRADE_BACKUP" "/mnt/$BACKUP_FILE"
 		umount /mnt
@@ -55,7 +53,7 @@ platform_do_flash() {
 
 	mkdir -p /boot
 
-	if [[ $board == "itus,shield-router" || $board == "itus,shield-bridge" || $board == "itus,shield-gateway" ]]; then
+	if [[ $board == "itus_shield-router" || $board == "itus_shield-bridge" || $board == "itus_shield-gateway" ]]; then
 	   # mmcblk1p1 (fat) contains all ELF-bin images for the Shield
 	   mount /dev/mmcblk1p1 /boot
 	   echo "flashing Itus Kernel to /boot/$kernel (/dev/mmblk1p1)"
@@ -98,13 +96,13 @@ platform_do_upgrade() {
 	erlite)
 		kernel=sda1
 		;;
-	itus,shield-router)
+	itus_shield-router)
 		kernel=ItusrouterImage
 		;;
-	itus,shield-bridge)
+	itus_shield-bridge)
 		kernel=ItusbridgeImage
 		;;
-	itus,shield-gateway)
+	itus_shield-gateway)
 		kernel=ItusgatewayImage
 		;;
 	*)
@@ -123,7 +121,7 @@ platform_check_image() {
 	case "$board" in
 	er | \
 	erlite | \
-	itus*)
+	itus_shield-*)
 		local tar_file="$1"
 		local kernel_length=$(tar xf $tar_file sysupgrade-$board/kernel -O | wc -c 2> /dev/null)
 		local rootfs_length=$(tar xf $tar_file sysupgrade-$board/root -O | wc -c 2> /dev/null)

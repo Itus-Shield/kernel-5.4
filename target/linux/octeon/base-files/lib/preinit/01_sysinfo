@@ -21,14 +21,14 @@ do_get_shield_mode() {
 
         if [ $GPIO16 -eq 0 ]; then
            # Recovery Mode
-           echo "itus,shield-gateway"
+           echo "itus_shield-gateway"
         else
            if [ $GPIO17 -eq 0 ]; then
               # Bridge Mode
-                 echo "itus,shield-bridge"
+                 echo "itus_shield-bridge"
            else
               # Router Mode
-                 echo "itus,shield-router"
+                 echo "itus_shield-router"
            fi
         fi
 }
